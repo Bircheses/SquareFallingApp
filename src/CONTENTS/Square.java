@@ -34,11 +34,19 @@ public class Square implements Runnable{
     }
 
     private void CheckCollision(int WindowHeight){
-        if(y>WindowHeight) y=-height;
+        if(y+height>WindowHeight) dy=0;
         for (Square square:squares) {
-            if(square!=this && dy!=0) {
-                if(width>square.width && y>0 && square.y > 0)  {
-                    if (y + height >= square.y && y + height <= square.y+square.height && square.x>=x && square.x<=x+width) {
+            if(square!=this) {
+                if(width>square.width && x>=square.x){
+                    if (y + height >= square.y && y + height <= square.y+square.height && square.x+square.width>=x) {
+                        dy = 0;
+                    }
+                }else if(width>square.width)  {
+                    if (y + height >= square.y && y + height <= square.y + square.height && square.x <= x + width) {
+                        dy = 0;
+                    }
+                }else if(width<square.width && x<=square.x && x+width>=square.x) {
+                    if (y + height >= square.y && y + height <= square.y+square.height) {
                         dy = 0;
                     }
                 }else{
