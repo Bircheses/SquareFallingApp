@@ -6,14 +6,19 @@ import java.util.Random;
 
 import static java.lang.Math.abs;
 
+/**
+ * Square object, implemented with multi-threading and logic behind collision with GamePanel and other Squares.
+ */
 public class Square implements Runnable{
-    int x,y,width,height,dy;
+    static int WINDOW_HEIGHT;
+    int x, y, width, height, dy=1;
     ArrayList<Square> squares;
     Random random = new Random();
     Color color = new Color(random.nextInt(255),random.nextInt(255),random.nextInt(255));
 
-    public Square(int x_clicked, int y_clicked, int x_released, int y_released, ArrayList<Square> squares){
+    public Square(int x_clicked, int y_clicked, int x_released, int y_released, ArrayList<Square> squares, int WINDOW_HEIGHT){
         this.squares=squares;
+        Square.WINDOW_HEIGHT = WINDOW_HEIGHT;
         if(x_released>x_clicked){
             x=x_clicked;
         }else if(x_clicked>x_released){
@@ -26,15 +31,14 @@ public class Square implements Runnable{
         }
         width=abs(x_released-x_clicked);
         height=abs(y_released-y_clicked);
-        dy=random.nextInt(5,10);
     }
     public void draw(Graphics2D g2d){
         g2d.setColor(color);
         g2d.fillRect(x,y,width,height);
     }
 
-    private void CheckCollision(int WindowHeight){
-        if(y+height>WindowHeight) dy=0;
+    private void CheckCollision(){
+        if(y + height > WINDOW_HEIGHT) dy = 0;
         for (Square square:squares) {
             if(square!=this) {
                 if(width>square.width && x>=square.x){
@@ -60,11 +64,11 @@ public class Square implements Runnable{
 
     @Override
     public void run() {
-        while(true){
+        while(dy!=0){
             y+=dy;
-            CheckCollision(600);
+            CheckCollision();
             try {
-                Thread.sleep(10);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

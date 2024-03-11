@@ -8,8 +8,13 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+/**
+ * An initialization of main panel for an application.
+ * Responsible for mouse adaption, square spawning logic and drawing using buffered image
+ */
 public class GamePanel extends JPanel implements MouseListener{
-    int clicked_x,clicked_y,released_x,released_y;
+    static int WINDOW_WIDTH = 1100, WINDOW_HEIGHT = 600;
+    int clicked_x, clicked_y, released_x, released_y;
     BufferedImage buffer;
     ArrayList<Square> squares;
 
@@ -19,26 +24,22 @@ public class GamePanel extends JPanel implements MouseListener{
     }
 
     private void initialize(){
-        setPreferredSize(new Dimension(1100,600));
-
-        buffer = new BufferedImage(1100,600,BufferedImage.TYPE_INT_RGB);
-
+        setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        buffer = new BufferedImage(WINDOW_WIDTH, WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
         addMouseListener(this);
     }
 
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-
         g.drawImage(CreateImageBuffer(),0,0,null);
     }
 
     private BufferedImage CreateImageBuffer(){
         Graphics2D g2d = buffer.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setColor(Color.WHITE);//Setting Color of a Background
-        g2d.fillRect(0, 0, 1100, 600);
-
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         for (Square square : squares) {
             square.draw(g2d);
         }
@@ -58,14 +59,12 @@ public class GamePanel extends JPanel implements MouseListener{
     public void mouseReleased(MouseEvent e) {
         released_x=e.getX();
         released_y=e.getY();
-
-        Square square = new Square(clicked_x,clicked_y,released_x,released_y,squares);
+        Square square = new Square(clicked_x, clicked_y, released_x, released_y, squares, WINDOW_HEIGHT);
         Thread thread = new Thread(square);
         thread.start();
         squares.add(square);
-
-        System.out.println(Thread.activeCount());
     }
+
     @Override
     public void mouseClicked(MouseEvent e) {
 
